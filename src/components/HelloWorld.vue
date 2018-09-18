@@ -93,11 +93,13 @@ export default {
   methods: {
     next_page() {
       const _this = this;
-      let dataLength = _data.length;
       let currentIndex = _this.index;
+      if (currentIndex >= _data.length-1) {
+        alert("页码超出范围");
+      }else{
       _this.index += 1;
       currentIndex++;
-      console.log(currentIndex)
+      
       _this.radio = _this.boolList[currentIndex]
       let option = {
         tooltip: {
@@ -138,12 +140,7 @@ export default {
           }
         ]
       };
-
-      if (currentIndex >= dataLength) {
-        alert("页码超出范围");
-        _this.index--
-      } else {
-        myChart.setOption(option);
+      myChart.setOption(option);
       }
     },
 
@@ -151,6 +148,9 @@ export default {
       const _this = this;
       let dataLength = _data.length;
       let currentIndex = _this.index;
+      if (currentIndex <= 0) {
+        alert("页码超出范围");
+      }else{
       _this.index -= 1;
       currentIndex--;
       _this.radio = _this.boolList[currentIndex]
@@ -193,11 +193,7 @@ export default {
           }
         ]
       };
-      if (_this.index < 0) {
-        alert("页码超出范围");
-        _this.index++;
-      } else {
-        myChart.setOption(option);
+      myChart.setOption(option);
       }
     },
 
@@ -222,7 +218,6 @@ export default {
     change() {
       const _this = this
       _this.boolList[_this.index] = _this.radio
-      console.log(_this.boolList)
     }
   }
 };
