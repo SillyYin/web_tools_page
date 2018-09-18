@@ -2,8 +2,8 @@
   <div class="hello">
     <div id="main" style="width: 1200px;height:400px; margin-top: 25px"></div>
     <div style="margin-top: 25px">
-      <el-radio :v-model=boolList[index] label="true" border>正确</el-radio>
-      <el-radio :v-model=boolList[index] label="false" border>错误</el-radio>
+      <el-radio v-model='radio' label="true" border @change="change">正确</el-radio>
+      <el-radio v-model='radio' label="false" border @change='change'>错误</el-radio>
     </div>
     <div style="margin-top: 25px">
       <el-button @click="pre_page">上一条</el-button>
@@ -12,7 +12,7 @@
       <el-button type="primary" @click="save">保存</el-button>
     </div>
   </div>
-</template>
+</template> 
 
 <script>
 import $ from "jquery";
@@ -28,7 +28,7 @@ export default {
       data: [],
       index: 0,
       boolList: [],
-      radio: "true"
+      radio: ""
     };
   },
   mounted() {
@@ -39,10 +39,12 @@ export default {
       if (resObj.status === "FAIL") {
         alert("加载错误，请联系管理员！");
       } else {
-        _this.data = resObj.data.map(item => JSON.parse(item));
-        _data = resObj.data.map(item => JSON.parse(item));
+        //_this.data = resObj.data.map(item => JSON.parse(item));
+        //_data = resObj.data.map(item => JSON.parse(item));
+        _this.data = resObj.data
+        _data = resObj.data
         _this.boolList = resObj.bool;
-        console.log(_this.boolList)
+        _this.radio = _this.boolList[_this.index]
         let option = {
           tooltip: {
             trigger: "item"
@@ -51,7 +53,7 @@ export default {
           series: [
             {
               type: "tree",
-              data: [_data[_this.index]],
+              data: [JSON.parse(_data[_this.index])],
               left: "5%",
               right: "5%",
               top: "8%",
@@ -91,10 +93,12 @@ export default {
   methods: {
     next_page() {
       const _this = this;
-      let dataLength = _this.data.length;
+      let dataLength = _data.length;
       let currentIndex = _this.index;
       _this.index += 1;
       currentIndex++;
+      console.log(currentIndex)
+      _this.radio = _this.boolList[currentIndex]
       let option = {
         tooltip: {
           trigger: "item"
@@ -103,7 +107,7 @@ export default {
         series: [
           {
             type: "tree",
-            data: [_data[currentIndex]],
+            data: [JSON.parse(_data[currentIndex])],
             left: "5%",
             right: "5%",
             top: "8%",
@@ -145,10 +149,11 @@ export default {
 
     pre_page() {
       const _this = this;
-      let dataLength = _this.data.length;
+      let dataLength = _data.length;
       let currentIndex = _this.index;
       _this.index -= 1;
       currentIndex--;
+      _this.radio = _this.boolList[currentIndex]
       let option = {
         tooltip: {
           trigger: "item"
@@ -157,7 +162,7 @@ export default {
         series: [
           {
             type: "tree",
-            data: [_data[currentIndex]],
+            data: [JSON.parse(_data[currentIndex])],
             left: "5%",
             right: "5%",
             top: "8%",
@@ -188,7 +193,7 @@ export default {
           }
         ]
       };
-      if (currentIndex < 0) {
+      if (_this.index < 0) {
         alert("页码超出范围");
         _this.index++;
       } else {
@@ -212,6 +217,12 @@ export default {
           }
         }
       )
+    },
+
+    change() {
+      const _this = this
+      _this.boolList[_this.index] = _this.radio
+      console.log(_this.boolList)
     }
   }
 };
